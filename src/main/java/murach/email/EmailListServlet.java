@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import murach.business.User;
-import murach.util.MailUtilGmail;
+import murach.util.MailUtilResend;
 
 public class EmailListServlet extends HttpServlet {
 
@@ -47,7 +47,7 @@ public class EmailListServlet extends HttpServlet {
 
             // send email to user
             String to = email;
-            String from = System.getenv().getOrDefault("MAIL_FROM", "nguyenkhoinguyen051105@gmail.com");
+            String from = System.getenv().getOrDefault("MAIL_FROM", "Email List <onboarding@resend.dev>");
             String subject = "Welcome to our email list";
             String body = "Dear " + firstName + ",\n\n"
                     + "Thanks for joining our email list. "
@@ -58,17 +58,14 @@ public class EmailListServlet extends HttpServlet {
                     + "Mike Murach & Associates";
             boolean isBodyHTML = false;
             try {
-                MailUtilGmail.sendMail(to, from, subject, body, isBodyHTML);
+                MailUtilResend.sendMail(to, from, subject, body, isBodyHTML);
             } catch (MessagingException e) {
-                String seenUser = System.getenv().getOrDefault("GMAIL_USER", "(not set)");
-                String seenPassword = System.getenv().getOrDefault("GMAIL_APP_PASSWORD", "");
+                String seenKey = System.getenv().getOrDefault("RESEND_API_KEY", "");
                 String errorMessage
                         = "ERROR: Unable to send email. "
                         + "Check Tomcat logs for details.<br>"
-                        + "NOTE: You may need to configure the GMAIL_USER and "
-                        + "GMAIL_APP_PASSWORD environment variables as described in chapter 14.<br>"
-                        + "DEBUG - GMAIL_USER seen by app: " + seenUser + "<br>"
-                        + "DEBUG - GMAIL_APP_PASSWORD length seen by app: " + seenPassword.length() + "<br>"
+                        + "NOTE: You may need to configure the RESEND_API_KEY environment variable.<br>"
+                        + "DEBUG - RESEND_API_KEY length seen by app: " + seenKey.length() + "<br>"
                         + "ERROR MESSAGE: " + e.getMessage();
                 request.setAttribute("errorMessage", errorMessage);
                 this.log(
