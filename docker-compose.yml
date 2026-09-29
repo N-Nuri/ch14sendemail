@@ -2,8 +2,11 @@ services:
   app:
     build: .
     environment:
-      MAIL_FROM: "Email List <onboarding@resend.dev>"
-      # Get a free key at https://resend.com (API Keys section).
-      RESEND_API_KEY: ""
+      MAIL_FROM: nguyenkhoinguyen051105@gmail.com
+      MAIL_FROM_NAME: "Email List"
+      # Get a free key at https://sendgrid.com (Settings > API Keys), after
+      # verifying MAIL_FROM under Settings > Sender Authentication > Single
+      # Sender Verification.
+      SENDGRID_API_KEY: ""
     ports:
       - "8080:8080"

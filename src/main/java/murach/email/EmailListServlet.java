@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import murach.business.User;
-import murach.util.MailUtilResend;
+import murach.util.MailUtilSendGrid;
 
 public class EmailListServlet extends HttpServlet {
 
@@ -47,7 +47,8 @@ public class EmailListServlet extends HttpServlet {
 
             // send email to user
             String to = email;
-            String from = System.getenv().getOrDefault("MAIL_FROM", "Email List <onboarding@resend.dev>");
+            String from = System.getenv().getOrDefault("MAIL_FROM", "nguyenkhoinguyen051105@gmail.com");
+            String fromName = System.getenv().getOrDefault("MAIL_FROM_NAME", "Email List");
             String subject = "Welcome to our email list";
             String body = "Dear " + firstName + ",\n\n"
                     + "Thanks for joining our email list. "
@@ -58,14 +59,14 @@ public class EmailListServlet extends HttpServlet {
                     + "Mike Murach & Associates";
             boolean isBodyHTML = false;
             try {
-                MailUtilResend.sendMail(to, from, subject, body, isBodyHTML);
+                MailUtilSendGrid.sendMail(to, from, fromName, subject, body, isBodyHTML);
             } catch (MessagingException e) {
-                String seenKey = System.getenv().getOrDefault("RESEND_API_KEY", "");
+                String seenKey = System.getenv().getOrDefault("SENDGRID_API_KEY", "");
                 String errorMessage
                         = "ERROR: Unable to send email. "
                         + "Check Tomcat logs for details.<br>"
-                        + "NOTE: You may need to configure the RESEND_API_KEY environment variable.<br>"
-                        + "DEBUG - RESEND_API_KEY length seen by app: " + seenKey.length() + "<br>"
+                        + "NOTE: You may need to configure the SENDGRID_API_KEY environment variable.<br>"
+                        + "DEBUG - SENDGRID_API_KEY length seen by app: " + seenKey.length() + "<br>"
                         + "ERROR MESSAGE: " + e.getMessage();
                 request.setAttribute("errorMessage", errorMessage);
                 this.log(
